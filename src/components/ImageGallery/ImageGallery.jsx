@@ -35,8 +35,7 @@ const loadMore = () => {
         setIsLoading(prevIsLoading => !prevIsLoading)
    try {
 
-     console.log(page)
-     console.log(photos)
+    
        const ulr = `https://pixabay.com/api/?q=${searcPhoto.search.search}&page=${pages}&key=31729330-76a93a375c4da5def12e352a3&image_type=photo&orientation=horizontal&per_page=12`;
     
        const photo = await axios.get(ulr);
