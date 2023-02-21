@@ -7,9 +7,9 @@ export class ImageGalleryItem extends Component {
     const {webformatURL, largeImageURL, hendlOpenModal} = this.props
     return (<>
       {
-  <GalleryImage onClick={() => hendlOpenModal(largeImageURL)}>
-  <GalleryItem src={webformatURL} alt=""/>
-</GalleryImage>
+  <GalleryItem onClick={() => hendlOpenModal(largeImageURL)}>
+  <GalleryImage src={webformatURL} alt=""/>
+</GalleryItem>
 }      
     </>)
       ;

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {useState, useEffect} from 'react'
+import {useState, useEffect, } from 'react'
 
 import { Gallery } from "./ImageGallery.styled"
 import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem'
@@ -15,7 +15,8 @@ export function ImageGallery({searcPhoto}) {
   const [openModal, setOpenModal] = useState(false);
   const [largeImageURL, setLargeImageURL] = useState(null);
   const [page, setPage] = useState(1);
-  
+  const [totalHits, totalHitsPage] = useState(1);
+  //  const firsRender = useRef(true);
   
     const hendlOpenModal = (largeImageURL) => {
       setLargeImageURL(largeImageURL);
@@ -28,36 +29,44 @@ export function ImageGallery({searcPhoto}) {
 
 const loadMore = () => {
   setPage(prevPage => prevPage + 1)
-  
 }
 
-  useEffect(() => {
-    setPhotos([]);
-    setPage(1);
-  }, [searcPhoto]);
-  
-  useEffect(() => {
-   const loadPhoto = async () => {
-  
-      setIsLoading(prevIsLoading => !prevIsLoading)
+  const fetchUser = async (pages) => {
+        setIsLoading(prevIsLoading => !prevIsLoading)
    try {
-       const ulr = `https://pixabay.com/api/?q=${searcPhoto.search.search}&page=${page}&key=31729330-76a93a375c4da5def12e352a3&image_type=photo&orientation=horizontal&per_page=12`;
+
+     console.log(page)
+     console.log(photos)
+       const ulr = `https://pixabay.com/api/?q=${searcPhoto.search.search}&page=${pages}&key=31729330-76a93a375c4da5def12e352a3&image_type=photo&orientation=horizontal&per_page=12`;
     
        const photo = await axios.get(ulr);
-
      //  photo.data.hits]);
+     totalHitsPage(photo.data.totalHits)
       setPhotos(prevPhotos => [...prevPhotos, ...photo.data.hits])
      } catch (error) {
        } finally {
        setIsLoading(prevIsLoading => !prevIsLoading);
-     } }
-   
-    if (searcPhoto !== '') {
-     loadPhoto();
-    }
-   }, [page, searcPhoto]);
+     } 
+    
+  }
+  useEffect(() => {
+    setPhotos([]);
+    setPage(1);
+     if (searcPhoto !== '') {
+       fetchUser(1);
+     }
+      setPhotos([]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searcPhoto]);
+
   
- 
+  useEffect(() => {
+    if (page !== 1) {
+       fetchUser(page);
+    }
+       
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
  
  
   return (
@@ -71,7 +80,7 @@ const loadMore = () => {
         {openModal && <Modal hendlCloseModal={hendlCloseModal}>
         <img src={largeImageURL} alt="" width="600" height="400"/>
         </Modal>}
-     {photos.length !== 0 && <Button loadMore={loadMore} />}
+     {photos.length !== 0 && photos.length !== totalHits && <Button loadMore={loadMore} />}
     </>
   )
 }
